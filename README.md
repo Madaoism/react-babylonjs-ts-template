@@ -1,5 +1,8 @@
 # Monkey Ball (temp name)
 
+### Create .env file
+To start your app with environment variables, please create a .env file in the repository folder, then copy content from .env.example 
+
 ### `npm install`
 Install/Update all the required dependencies
 
