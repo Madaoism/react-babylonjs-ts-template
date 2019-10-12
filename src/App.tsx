@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import {
+  Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
+import history from './history';
+import { Customizer } from '@uifabric/utilities';
+
+import { Home } from './routes';
+import ColorInjector from './components/ColorInjector';
+import { initTheme, Customizations, palette } from './styles';
+import setFaviconUrl from './utils/setFaviconUrl';
 import logo from './logo.svg';
 import './App.css';
 
 const App: React.FC = () => {
+
+  // anything that should be executed for the first time goes here
+  useEffect(() => {
+    initTheme();
+    setFaviconUrl(logo);
+  }, [])
+
+  // the main router, handles all URL switching, if needed
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ColorInjector theme={{ palette }}/>
+      <Customizer {...Customizations}>
+        <Router history={history}>
+          <Switch>
+            <Route path='/' exact component={Home}/>
+          </Switch>
+        </Router>
+      </Customizer>
     </div>
   );
 }
