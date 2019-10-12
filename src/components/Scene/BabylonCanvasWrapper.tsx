@@ -41,6 +41,7 @@ const BabylonCanvasWrapper: React.FC<ICanvasWrapperProps> = React.memo((props) =
     onSceneUnmount
   } = props;
 
+  const resizeCallbackRef: React.MutableRefObject<(() => void) | null> = useRef(null);
   const canvasRef: React.MutableRefObject<HTMLCanvasElement | null> = useRef(null);
   const setCanvasRef = (node: HTMLCanvasElement) => {
     canvasRef.current = node;
@@ -51,7 +52,12 @@ const BabylonCanvasWrapper: React.FC<ICanvasWrapperProps> = React.memo((props) =
         if (!scene) {
           throw new Error('Failed to initialize scene! Unknown error!');
         }
-  
+        
+        resizeCallbackRef.current = () => {
+          engine.resize();
+        };
+        window.addEventListener('resize', resizeCallbackRef.current);
+
         if (onSceneMount) {
           onSceneMount(scene, engine, canvasRef.current);
         }
@@ -61,6 +67,10 @@ const BabylonCanvasWrapper: React.FC<ICanvasWrapperProps> = React.memo((props) =
       }
     }
     else {
+      if (resizeCallbackRef.current) {
+        window.removeEventListener('resize', resizeCallbackRef.current);
+      }
+
       if (onSceneUnmount) {
         onSceneUnmount();
       }
